@@ -19,6 +19,8 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
 Write-Host "Claude Code and Node.js are ready."
 
 Step "2. Adding AI Consultant to Claude Code"
+# Running this again updates an existing install.
+claude plugin marketplace update enterprise-ai *> $null; claude plugin update ai-consultant@enterprise-ai *> $null
 claude plugin install ai-consultant --marketplace enterpriseaigroup/ai-consultant *> $null
 if ($LASTEXITCODE -ne 0) {
   claude plugin marketplace add enterpriseaigroup/ai-consultant *> $null
@@ -26,7 +28,10 @@ if ($LASTEXITCODE -ne 0) {
   if ($LASTEXITCODE -ne 0) { Write-Host "Claude Code couldn't install the plugin. Update Claude Code (claude update) and run this line again."; return }
 }
 claude plugin install ai-consultant-design-kit@enterprise-ai *> $null
-Write-Host "Installed. It only switches on in a new, empty folder, so your other projects aren't affected."
+# Keep it up to date by itself: Claude Code checks our marketplace for new versions after a session starts.
+$km = Join-Path $HOME '.claude/plugins/known_marketplaces.json'
+try { $m = Get-Content $km -Raw | ConvertFrom-Json; if ($m.'enterprise-ai') { $m.'enterprise-ai' | Add-Member -NotePropertyName autoUpdate -NotePropertyValue $true -Force; $m | ConvertTo-Json -Depth 10 | Set-Content $km } } catch {}
+Write-Host "Installed, and set to update itself. It only switches on in a new, empty folder, so your other projects aren't affected."
 
 Step "3. Getting the walkthrough recorder ready (about a minute, once)"
 $Tools = Join-Path $HOME '.eai-tools'

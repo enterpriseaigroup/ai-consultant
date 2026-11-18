@@ -23,11 +23,17 @@ fi
 say "Claude Code and Node.js are ready."
 
 step "2. Adding AI Consultant to Claude Code"
+# Running this again updates an existing install.
+claude plugin marketplace update enterprise-ai >/dev/null 2>&1 && claude plugin update ai-consultant@enterprise-ai >/dev/null 2>&1 || true
 claude plugin install ai-consultant --marketplace enterpriseaigroup/ai-consultant >/dev/null 2>&1 \
   || { claude plugin marketplace add enterpriseaigroup/ai-consultant >/dev/null 2>&1 || true; claude plugin install ai-consultant@enterprise-ai >/dev/null 2>&1; } \
   || stop "Claude Code couldn't install the plugin. Update Claude Code (claude update) and run this line again."
 claude plugin install ai-consultant-design-kit@enterprise-ai >/dev/null 2>&1 || true
-say "Installed. It only switches on in a new, empty folder, so your other projects aren't affected."
+# Keep it up to date by itself: Claude Code checks our marketplace for new versions after a session starts.
+node -e '
+const fs = require("fs"), f = require("os").homedir() + "/.claude/plugins/known_marketplaces.json";
+try { const m = JSON.parse(fs.readFileSync(f, "utf8")); if (m["enterprise-ai"]) { m["enterprise-ai"].autoUpdate = true; fs.writeFileSync(f, JSON.stringify(m, null, 2)); } } catch {}' || true
+say "Installed, and set to update itself. It only switches on in a new, empty folder, so your other projects aren't affected."
 
 step "3. Getting the walkthrough recorder ready (about a minute, once)"
 TOOLS="$HOME/.eai-tools"
