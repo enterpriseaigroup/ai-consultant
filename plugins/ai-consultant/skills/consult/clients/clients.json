@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Riverbend City Council",
+    "website": "riverbend.example",
+    "aliases": [
+      "riverbend",
+      "riverbend council"
+    ],
+    "sector": "Local government",
+    "logo": "logos/riverbend.svg",
+    "primaryColor": "#0F5E6E",
+    "secondaryColor": "#E3B23C",
+    "source": "sample",
+    "primaryForeground": "#FFFFFF",
+    "logoOnDark": false
+  },
+  {
+    "name": "Greenfield Shire",
+    "website": "greenfield.example",
+    "aliases": [
+      "greenfield"
+    ],
+    "sector": "Local government",
+    "logo": "logos/greenfield.svg",
+    "primaryColor": "#2F7D4F",
+    "secondaryColor": "#D8C38A",
+    "source": "sample",
+    "primaryForeground": "#FFFFFF",
+    "logoOnDark": false
+  },
+  {
+    "name": "Northwind Health",
+    "website": "northwind.example",
+    "aliases": [
+      "northwind"
+    ],
+    "sector": "Healthcare",
+    "logo": "logos/northwind.svg",
+    "primaryColor": "#2E6FDB",
+    "secondaryColor": "#9CC3F5",
+    "source": "sample",
+    "primaryForeground": "#FFFFFF",
+    "logoOnDark": false
+  },
+  {
+    "name": "Harbour & Partners",
+    "website": "harbour.example",
+    "aliases": [
+      "harbour",
+      "harbour partners"
+    ],
+    "sector": "Professional services",
+    "logo": "logos/harbour.svg",
+    "primaryColor": "#1F3A5F",
+    "secondaryColor": "#C9A227",
+    "source": "sample",
+    "primaryForeground": "#FFFFFF",
+    "logoOnDark": false
+  },
+  {
+    "name": "Lumina",
+    "website": "lumina.example",
+    "aliases": [],
+    "sector": "Skincare",
+    "logo": "logos/lumina.svg",
+    "primaryColor": "#C2426A",
+    "secondaryColor": "#F6EFEA",
+    "source": "sample",
+    "primaryForeground": "#FFFFFF",
+    "logoOnDark": false
+  }
+]

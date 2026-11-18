@@ -1,0 +1,171 @@
+{
+  "id": "contract-review",
+  "name": "Contract review",
+  "goal": "Find the clauses that break our policy before the contract goes to legal, not after.",
+  "refPrefix": "CR",
+  "newLabel": "New contract",
+  "assistant": {
+    "greeting": "Hi, I can help you get this contract ready to sign. Ask me about any clause or our contract policy.",
+    "answers": [
+      {
+        "when": "liability",
+        "reply": "Our policy caps the other party's liability at no less than the total contract value. A lower cap, or none for data breaches, is flagged for legal."
+      },
+      {
+        "when": "renew",
+        "reply": "Contracts that renew by themselves need at least 60 days' notice to end. If the notice period is shorter, or missing, the check flags it."
+      },
+      {
+        "when": "termination",
+        "reply": "We need the right to end the contract for convenience with 30 days' notice. Contracts that only allow ending for breach are flagged."
+      },
+      {
+        "when": "insurance",
+        "reply": "Suppliers need public liability of at least $20 million and professional indemnity of at least $5 million, current for the whole term."
+      },
+      {
+        "when": "payment",
+        "reply": "Our standard payment terms are 30 days from a correct invoice. Anything shorter needs the finance manager's sign-off."
+      }
+    ],
+    "fallback": "In the real app I'd answer that from the contract policy. For now, try asking about liability, renewals, termination, insurance or payment terms."
+  },
+  "steps": [
+    {
+      "label": "About the contract",
+      "short": "Contract",
+      "kind": "form",
+      "goal": "Tell us what the contract is for and who it's with, so we know which policies apply.",
+      "config": {
+        "saveAs": "Contracts",
+        "fields": [
+          {
+            "label": "Contract title",
+            "type": "text",
+            "required": true,
+            "wide": true
+          },
+          {
+            "label": "Other party",
+            "type": "text",
+            "required": true,
+            "hint": "The legal name, as on their ABN"
+          },
+          {
+            "label": "Contract type",
+            "type": "choice",
+            "required": true,
+            "options": [
+              "Services agreement",
+              "Supply agreement",
+              "Software licence",
+              "Lease",
+              "Confidentiality agreement"
+            ]
+          },
+          {
+            "label": "Total value ($)",
+            "type": "number",
+            "required": true,
+            "hint": "Over the whole term, excluding GST"
+          },
+          {
+            "label": "Start date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "label": "Term (months)",
+            "type": "number",
+            "required": true
+          },
+          {
+            "label": "Business owner email",
+            "type": "email",
+            "required": true
+          },
+          {
+            "label": "Does it renew by itself?",
+            "type": "toggle",
+            "required": true
+          }
+        ],
+        "sample": {
+          "Contract title": "Office cleaning services, Sydney and Melbourne",
+          "Other party": "Brightline Facility Services Pty Ltd",
+          "Contract type": "Services agreement",
+          "Total value ($)": "486,000",
+          "Start date": "2027-01-01",
+          "Term (months)": "36",
+          "Business owner email": "tom.reilly@example.com",
+          "Does it renew by itself?": "Yes"
+        }
+      }
+    },
+    {
+      "label": "The contract",
+      "short": "Upload",
+      "kind": "upload",
+      "goal": "Add the contract and its schedules. Each one is checked as you add it.",
+      "config": {
+        "saveAs": "Contract documents",
+        "aiCheck": true,
+        "checklist": [
+          {
+            "name": "Contract",
+            "check": "The final draft, with every schedule it refers to attached",
+            "sample": "Clause 8 refers to Schedule 3 (pricing), but it isn't attached"
+          },
+          {
+            "name": "Statement of work",
+            "check": "Services, sites and service levels match the contract",
+            "sample": "The statement of work lists 4 sites; the contract lists 3"
+          },
+          {
+            "name": "Certificate of insurance",
+            "check": "Public liability of $20 million or more, current for the whole term",
+            "sample": "The certificate expires on 30 June 2027, well before the contract ends"
+          },
+          {
+            "name": "Pricing schedule",
+            "check": "Adds up to the total value in the contract details",
+            "sample": "The pricing schedule adds up to $512,000, not $486,000"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Policy check",
+      "short": "Check",
+      "kind": "compose",
+      "goal": "Here's every clause that doesn't meet our policy, in plain words, with the wording we'd suggest instead.",
+      "config": {
+        "saveAs": "Policy reports"
+      }
+    },
+    {
+      "label": "Sign-off",
+      "short": "Sign-off",
+      "kind": "approval",
+      "goal": "Legal and finance see the contract with the policy check done, and approve it to sign.",
+      "config": {
+        "approvers": [
+          {
+            "name": "Rebecca Lam",
+            "role": "Senior legal counsel"
+          },
+          {
+            "name": "Stuart Douglas",
+            "role": "Finance manager"
+          }
+        ],
+        "accept": "Approve to sign",
+        "sendBack": "Send back",
+        "confirmTitle": "Send this contract back?",
+        "confirmText": "The business owner will take your note back to the other party. Say which clauses still need to change.",
+        "confirmButton": "Send back",
+        "note": "Which clauses need to change?"
+      }
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "id": "rfp-evaluation",
+  "name": "RFP evaluation",
+  "goal": "Score every vendor the same way and reach a decision in a week, not a month.",
+  "refPrefix": "RFP",
+  "newLabel": "New RFP",
+  "assistant": {
+    "greeting": "Hi, I can help you evaluate the vendor submissions. Ask me about the scoring, price or the rules we follow.",
+    "answers": [
+      {
+        "when": "weighting",
+        "reply": "Each criterion has the weighting you set in the RFP. Scores are out of 5, multiplied by the weighting and added up, so the total is out of 100."
+      },
+      {
+        "when": "price",
+        "reply": "Prices are compared excluding GST over the whole term. If a vendor priced differently, the check converts it and notes that it did."
+      },
+      {
+        "when": "conflict",
+        "reply": "Everyone on the panel must declare any conflict of interest before scoring starts. If someone has one, they step out of the evaluation."
+      },
+      {
+        "when": "late",
+        "reply": "Submissions that arrive after the closing time aren't evaluated, unless the procurement manager approves an exception in writing."
+      },
+      {
+        "when": "debrief",
+        "reply": "Unsuccessful vendors can ask for a debrief. We tell them how they scored against each criterion, but never another vendor's price."
+      }
+    ],
+    "fallback": "In the real app I'd answer that from the procurement policy. For now, try asking about weighting, price, conflicts of interest or late submissions."
+  },
+  "steps": [
+    {
+      "label": "About the RFP",
+      "short": "RFP",
+      "kind": "form",
+      "goal": "Tell us what you're buying and how you'll judge it, so every vendor is scored the same way.",
+      "config": {
+        "saveAs": "RFPs",
+        "fields": [
+          {
+            "label": "RFP title",
+            "type": "text",
+            "required": true,
+            "wide": true
+          },
+          {
+            "label": "RFP reference",
+            "type": "text",
+            "required": true
+          },
+          {
+            "label": "Category",
+            "type": "choice",
+            "required": true,
+            "options": [
+              "IT services",
+              "Facilities",
+              "Professional services",
+              "Marketing",
+              "Equipment"
+            ]
+          },
+          {
+            "label": "Budget ($)",
+            "type": "number",
+            "required": true,
+            "hint": "Over the whole term, excluding GST"
+          },
+          {
+            "label": "Closing date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "label": "Evaluation lead email",
+            "type": "email",
+            "required": true
+          },
+          {
+            "label": "Has every panel member made a conflict declaration?",
+            "type": "toggle",
+            "required": true
+          },
+          {
+            "label": "Criteria and weightings",
+            "type": "long",
+            "required": true,
+            "wide": true,
+            "hint": "One per line, with its weighting. They should add up to 100%."
+          }
+        ],
+        "sample": {
+          "RFP title": "Managed IT support for head office and 12 branches",
+          "RFP reference": "RFP-2026-031",
+          "Category": "IT services",
+          "Budget ($)": "1,800,000",
+          "Closing date": "2026-11-28",
+          "Evaluation lead email": "nadia.hassan@example.com",
+          "Has every panel member made a conflict declaration?": "Yes",
+          "Criteria and weightings": "Price: 30%\nService levels and response times: 25%\nExperience with similar organisations: 20%\nTransition plan: 15%\nSecurity and certifications: 10%"
+        }
+      }
+    },
+    {
+      "label": "Vendor submissions",
+      "short": "Submissions",
+      "kind": "upload",
+      "goal": "Add every vendor's submission. Each one is checked as you add it, so gaps show up before scoring starts.",
+      "config": {
+        "saveAs": "Submissions",
+        "aiCheck": true,
+        "checklist": [
+          {
+            "name": "Vendor responses",
+            "check": "One per vendor, answering every mandatory section",
+            "sample": "One vendor skipped the transition plan section"
+          },
+          {
+            "name": "Pricing schedules",
+            "check": "In our template, excluding GST, covering the whole term",
+            "sample": "One vendor's prices include GST and only cover the first year"
+          },
+          {
+            "name": "Certificates of insurance",
+            "check": "Current, with the cover the RFP asks for",
+            "sample": "One vendor's professional indemnity is $2 million; the RFP asks for $5 million"
+          },
+          {
+            "name": "Referees",
+            "check": "Two from the last 3 years, from organisations of a similar size",
+            "sample": "Both of one vendor's referees are from 2021"
+          },
+          {
+            "name": "Conflict of interest declarations",
+            "check": "Signed by everyone on the evaluation panel",
+            "sample": "Two of the four panel members haven't signed"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Scoring",
+      "short": "Scoring",
+      "kind": "compose",
+      "goal": "Here's each vendor scored against the criteria, with the evidence for every score and a recommended vendor.",
+      "config": {
+        "saveAs": "Scoring reports"
+      }
+    },
+    {
+      "label": "Decision",
+      "short": "Decision",
+      "kind": "approval",
+      "goal": "The decision makers see the scores and the reasons side by side, and approve the recommended vendor.",
+      "config": {
+        "approvers": [
+          {
+            "name": "Nadia Hassan",
+            "role": "Procurement manager"
+          },
+          {
+            "name": "Peter Lindqvist",
+            "role": "Chief operating officer"
+          }
+        ],
+        "accept": "Approve recommendation",
+        "sendBack": "Send back",
+        "confirmTitle": "Send this evaluation back?",
+        "confirmText": "The panel will look at the scoring again using your note. Say which scores or reasons you don't agree with.",
+        "confirmButton": "Send back",
+        "note": "What should the panel look at again?"
+      }
+    }
+  ]
+}

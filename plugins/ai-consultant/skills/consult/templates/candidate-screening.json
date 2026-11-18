@@ -1,0 +1,194 @@
+{
+  "id": "candidate-screening",
+  "name": "Candidate screening",
+  "goal": "Get from a pile of CVs to a fair shortlist in a day, not a fortnight.",
+  "refPrefix": "CS",
+  "newLabel": "New role",
+  "assistant": {
+    "greeting": "Hi, I can help you screen candidates for this role. Ask me about the shortlist, the criteria or any CV.",
+    "answers": [
+      {
+        "when": "shortlist",
+        "reply": "Each candidate is scored against the must-have skills you listed. Anyone who meets every one goes on the shortlist, and the report says why for each person."
+      },
+      {
+        "when": "right to work",
+        "reply": "If you've said the role needs the right to work in Australia, candidates who haven't confirmed it are flagged, not dropped. Someone checks it before an offer."
+      },
+      {
+        "when": "fair",
+        "reply": "Names, ages, photos and addresses are left out of the scoring. Every CV is read against the same criteria, in the same order."
+      },
+      {
+        "when": "salary",
+        "reply": "If a candidate states an expected salary above the top of your band, it's noted in the report so you can decide before the interview."
+      },
+      {
+        "when": "how long",
+        "reply": "Once the CVs are in, the screening report is ready in minutes. Most of the time left is the hiring manager reading the shortlist."
+      }
+    ],
+    "fallback": "In the real app I'd answer that from your role details and the CVs. For now, try asking about the shortlist, right to work, fairness or salary."
+  },
+  "steps": [
+    {
+      "label": "About the role",
+      "short": "Role",
+      "kind": "form",
+      "goal": "Tell us about the role, so every CV is checked against the same must-haves.",
+      "config": {
+        "saveAs": "Roles",
+        "fields": [
+          {
+            "label": "Role title",
+            "type": "text",
+            "required": true,
+            "wide": true
+          },
+          {
+            "label": "Team",
+            "type": "choice",
+            "required": true,
+            "options": [
+              "Finance",
+              "Operations",
+              "Sales",
+              "Technology",
+              "People and culture"
+            ]
+          },
+          {
+            "label": "Location",
+            "type": "search",
+            "required": true,
+            "options": [
+              "Adelaide",
+              "Brisbane",
+              "Canberra",
+              "Darwin",
+              "Geelong",
+              "Gold Coast",
+              "Hobart",
+              "Melbourne",
+              "Newcastle",
+              "Parramatta",
+              "Perth",
+              "Sydney",
+              "Wollongong",
+              "Remote"
+            ]
+          },
+          {
+            "label": "Employment type",
+            "type": "choice",
+            "required": true,
+            "options": [
+              "Full time",
+              "Part time",
+              "Fixed term",
+              "Casual"
+            ]
+          },
+          {
+            "label": "Top of salary band ($)",
+            "type": "number",
+            "required": true,
+            "hint": "Base salary, before super"
+          },
+          {
+            "label": "Applications close",
+            "type": "date",
+            "required": true
+          },
+          {
+            "label": "Needs the right to work in Australia?",
+            "type": "toggle",
+            "required": true
+          },
+          {
+            "label": "Must-have skills and experience",
+            "type": "long",
+            "required": true,
+            "wide": true,
+            "hint": "One per line. These are what every CV is scored against."
+          }
+        ],
+        "sample": {
+          "Role title": "Senior payroll officer",
+          "Team": "Finance",
+          "Location": "Parramatta",
+          "Employment type": "Full time",
+          "Top of salary band ($)": "105,000",
+          "Applications close": "2026-12-04",
+          "Needs the right to work in Australia?": "Yes",
+          "Must-have skills and experience": "3+ years running end-to-end payroll for 500+ staff\nWorking knowledge of modern awards and Single Touch Payroll\nExperience with a major payroll system\nReconciling payroll to the general ledger each month"
+        }
+      }
+    },
+    {
+      "label": "CVs",
+      "short": "CVs",
+      "kind": "upload",
+      "goal": "Add the CVs and anything that came with them. Each one is checked as you add it.",
+      "config": {
+        "saveAs": "CVs",
+        "aiCheck": true,
+        "checklist": [
+          {
+            "name": "Candidate CVs",
+            "check": "One file per candidate, with text that can be read",
+            "sample": "Three CVs are scanned images, so the text can't be read"
+          },
+          {
+            "name": "Cover letters",
+            "check": "Matched to the right candidate's CV",
+            "sample": "Two cover letters don't name the candidate and can't be matched"
+          },
+          {
+            "name": "Selection criteria responses",
+            "check": "Answers every must-have listed for the role",
+            "sample": "Four candidates didn't answer the Single Touch Payroll criterion"
+          },
+          {
+            "name": "Position description",
+            "check": "Current version, matching the role title and salary band",
+            "sample": "The position description is for the old Payroll officer role at a lower band"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Screening report",
+      "short": "Report",
+      "kind": "compose",
+      "goal": "Here's how each candidate stacks up against the must-haves, and who should make the shortlist.",
+      "config": {
+        "saveAs": "Screening reports"
+      }
+    },
+    {
+      "label": "Shortlist",
+      "short": "Shortlist",
+      "kind": "approval",
+      "goal": "The hiring manager sees the shortlist with the reasons, and signs it off for interviews.",
+      "config": {
+        "approvers": [
+          {
+            "name": "Megan Whitfield",
+            "role": "Hiring manager"
+          },
+          {
+            "name": "Arjun Mehta",
+            "role": "People and culture partner"
+          }
+        ],
+        "accept": "Approve shortlist",
+        "sendBack": "Send back",
+        "confirmTitle": "Send this shortlist back?",
+        "confirmText": "The recruiter will rework the shortlist using your note. Say who should be added or taken off, and why.",
+        "confirmButton": "Send back",
+        "note": "What should change?"
+      }
+    }
+  ]
+}

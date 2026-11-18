@@ -1,0 +1,188 @@
+{
+  "id": "client-onboarding",
+  "name": "Client onboarding",
+  "goal": "Get a new client's ID and checks done in one go, so they can start in days, not weeks.",
+  "refPrefix": "CL",
+  "newLabel": "New client",
+  "assistant": {
+    "greeting": "Hi, I can help you bring on a new client. Ask me about ID, the checks or what each document needs to show.",
+    "answers": [
+      {
+        "when": "id",
+        "reply": "We need one photo ID for each person: a current passport or Australian driver licence. The name and date of birth must match the client details."
+      },
+      {
+        "when": "address",
+        "reply": "Proof of address can be a utility bill, bank statement or rates notice, dated in the last 3 months, in the client's name."
+      },
+      {
+        "when": "owner",
+        "reply": "For a company or trust, we need ID for anyone who owns or controls 25% or more. The company extract shows us who they are."
+      },
+      {
+        "when": "government",
+        "reply": "If anyone involved holds, or has held, a senior government role, the client needs extra checks and a senior sign-off. It doesn't stop them becoming a client."
+      },
+      {
+        "when": "how long",
+        "reply": "If the documents are right first time, the checks take minutes and approval usually happens the same day."
+      }
+    ],
+    "fallback": "In the real app I'd answer that from our onboarding policy. For now, try asking about ID, proof of address, owners or government roles."
+  },
+  "steps": [
+    {
+      "label": "Client details",
+      "short": "Details",
+      "kind": "form",
+      "goal": "Tell us who the client is, so we know which ID and checks they need.",
+      "config": {
+        "saveAs": "Clients",
+        "fields": [
+          {
+            "label": "Client name",
+            "type": "text",
+            "required": true,
+            "wide": true,
+            "hint": "The legal name of the person or organisation"
+          },
+          {
+            "label": "Client type",
+            "type": "choice",
+            "required": true,
+            "options": [
+              "Individual",
+              "Company",
+              "Trust",
+              "Partnership"
+            ]
+          },
+          {
+            "label": "ABN",
+            "type": "text",
+            "required": false,
+            "hint": "11 digits. Leave blank for individuals."
+          },
+          {
+            "label": "Main contact",
+            "type": "text",
+            "required": true
+          },
+          {
+            "label": "Contact email",
+            "type": "email",
+            "required": true
+          },
+          {
+            "label": "Country of residence",
+            "type": "search",
+            "required": true,
+            "options": [
+              "Australia",
+              "Canada",
+              "China",
+              "Hong Kong",
+              "India",
+              "Indonesia",
+              "Japan",
+              "Malaysia",
+              "New Zealand",
+              "Philippines",
+              "Singapore",
+              "South Korea",
+              "United Kingdom",
+              "United States",
+              "Vietnam"
+            ]
+          },
+          {
+            "label": "Expected start date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "label": "Does anyone involved hold a senior government role?",
+            "type": "toggle",
+            "required": true,
+            "hint": "Now or in the past, here or overseas"
+          }
+        ],
+        "sample": {
+          "Client name": "Harbourview Logistics Pty Ltd",
+          "Client type": "Company",
+          "ABN": "53 004 085 616",
+          "Main contact": "Sophie Nguyen",
+          "Contact email": "sophie.nguyen@example.com",
+          "Country of residence": "Australia",
+          "Expected start date": "2026-12-01",
+          "Does anyone involved hold a senior government role?": "No"
+        }
+      }
+    },
+    {
+      "label": "ID and documents",
+      "short": "Documents",
+      "kind": "upload",
+      "goal": "Add the client's ID and documents. Each one is checked as you add it, so we don't have to chase them later.",
+      "config": {
+        "saveAs": "Client documents",
+        "aiCheck": true,
+        "checklist": [
+          {
+            "name": "Photo ID",
+            "check": "Current passport or driver licence for each director and owner",
+            "sample": "The driver licence for one director expired in August"
+          },
+          {
+            "name": "Proof of address",
+            "check": "In the client's name, dated in the last 3 months",
+            "sample": "The electricity bill is dated May, more than 3 months ago"
+          },
+          {
+            "name": "Company extract",
+            "check": "Current, showing every director and shareholder",
+            "sample": "The extract is from 2024 and shows a director who has since left"
+          },
+          {
+            "name": "Signed engagement letter",
+            "check": "Signed by someone the company extract says can sign",
+            "sample": "It's signed by the office manager, who isn't a director"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Checks",
+      "short": "Checks",
+      "kind": "compose",
+      "goal": "Here's what the ID, sanctions and ownership checks found, and anything that needs a person to look at it.",
+      "config": {
+        "saveAs": "Check reports"
+      }
+    },
+    {
+      "label": "Approve",
+      "short": "Approve",
+      "kind": "approval",
+      "goal": "Compliance sees the client with every check done, and approves them to start.",
+      "config": {
+        "approvers": [
+          {
+            "name": "Grace Kelleher",
+            "role": "Compliance officer"
+          },
+          {
+            "name": "Ben Adeyemi",
+            "role": "Client partner"
+          }
+        ],
+        "accept": "Approve client",
+        "sendBack": "Send back",
+        "confirmTitle": "Send this client back?",
+        "confirmText": "The client partner will go back to the client with your note. Say which documents or details are still needed.",
+        "confirmButton": "Send back",
+        "note": "What's still needed?"
+      }
+    }
+  ]
+}

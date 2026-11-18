@@ -1,0 +1,9 @@
+{
+  "name": "ai-consultant-design-kit",
+  "version": "0.1.0",
+  "description": "Design skills that make what Claude builds look and feel better: Emil Kowalski's design engineering, motion and mobile skills, Vercel's Web Interface Guidelines, a design principles review, clean copy, and hidden worst-case QA.",
+  "author": {
+    "name": "Enterprise AI"
+  },
+  "license": "MIT"
+}

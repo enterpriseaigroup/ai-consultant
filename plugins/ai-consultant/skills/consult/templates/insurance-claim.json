@@ -1,0 +1,171 @@
+{
+  "id": "insurance-claim",
+  "name": "Insurance claim",
+  "goal": "Get every claim complete when it's lodged, so it's decided in days, not weeks.",
+  "refPrefix": "CLM",
+  "newLabel": "New claim",
+  "assistant": {
+    "greeting": "Hi, I can help you lodge your claim. Ask me about what to send, your excess or how long it takes.",
+    "answers": [
+      {
+        "when": "excess",
+        "reply": "Your excess is the amount you pay towards each claim. It's on your certificate of insurance and comes off what we pay you."
+      },
+      {
+        "when": "photos",
+        "reply": "Take wide photos of the whole area first, then close-ups of the damage. If you can, show where it started, such as the leaking pipe or broken window."
+      },
+      {
+        "when": "quote",
+        "reply": "A repair quote must come from a licensed tradesperson, list each item and its cost, and show their ABN and licence number."
+      },
+      {
+        "when": "police",
+        "reply": "For theft or break-ins, report it to the police first and give us the event number. We can't assess a theft claim without it."
+      },
+      {
+        "when": "how long",
+        "reply": "When everything's in, most claims get a decision within 5 business days. If we need more from you, we'll say exactly what."
+      }
+    ],
+    "fallback": "In the real app I'd answer that from your policy wording. For now, try asking about your excess, photos, repair quotes or police reports."
+  },
+  "steps": [
+    {
+      "label": "What happened",
+      "short": "Details",
+      "kind": "form",
+      "goal": "Tell us what happened and when, so we know what to ask you for.",
+      "config": {
+        "saveAs": "Claims",
+        "fields": [
+          {
+            "label": "Policy number",
+            "type": "text",
+            "required": true,
+            "hint": "On your certificate of insurance"
+          },
+          {
+            "label": "Your name",
+            "type": "text",
+            "required": true
+          },
+          {
+            "label": "Your email",
+            "type": "email",
+            "required": true
+          },
+          {
+            "label": "Date it happened",
+            "type": "date",
+            "required": true
+          },
+          {
+            "label": "Type of claim",
+            "type": "choice",
+            "required": true,
+            "options": [
+              "Storm damage",
+              "Water damage",
+              "Theft or break-in",
+              "Accidental damage",
+              "Fire"
+            ]
+          },
+          {
+            "label": "Estimated cost ($)",
+            "type": "number",
+            "required": true,
+            "hint": "Your best guess is fine"
+          },
+          {
+            "label": "Did you report it to the police?",
+            "type": "toggle",
+            "required": true
+          },
+          {
+            "label": "Tell us what happened",
+            "type": "long",
+            "required": true,
+            "wide": true
+          }
+        ],
+        "sample": {
+          "Policy number": "HC-2048813",
+          "Your name": "Liam O'Connor",
+          "Your email": "liam.oconnor@example.com",
+          "Date it happened": "2026-11-08",
+          "Type of claim": "Water damage",
+          "Estimated cost ($)": "14,500",
+          "Did you report it to the police?": "No",
+          "Tell us what happened": "A flexi hose under the upstairs bathroom sink burst while we were at work. Water came through the ceiling into the kitchen, damaging the plasterboard, the cabinets and the floorboards."
+        }
+      }
+    },
+    {
+      "label": "Evidence",
+      "short": "Evidence",
+      "kind": "upload",
+      "goal": "Add your photos and quotes. Each one is checked as you add it, so nothing comes back later.",
+      "config": {
+        "saveAs": "Evidence",
+        "aiCheck": true,
+        "checklist": [
+          {
+            "name": "Photos of the damage",
+            "check": "Wide shots and close-ups, showing where the damage started",
+            "sample": "The photos show the kitchen ceiling but not the burst hose upstairs"
+          },
+          {
+            "name": "Repair quote",
+            "check": "From a licensed tradesperson, itemised, with their ABN and licence number",
+            "sample": "The quote is a single total of $14,500 with no breakdown"
+          },
+          {
+            "name": "Plumber's report",
+            "check": "Says what caused the leak and when it was fixed",
+            "sample": "The report doesn't say whether the hose failed suddenly or had been leaking"
+          },
+          {
+            "name": "Proof of ownership",
+            "check": "Receipts or bank statements for any contents you're claiming",
+            "sample": "There's no receipt for the coffee machine listed in the claim"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Assessment",
+      "short": "Assessment",
+      "kind": "compose",
+      "goal": "Here's what the policy covers for this claim, what it doesn't, and the amount we'd suggest.",
+      "config": {
+        "saveAs": "Assessments"
+      }
+    },
+    {
+      "label": "Decision",
+      "short": "Decision",
+      "kind": "approval",
+      "goal": "The assessor sees a complete claim with the policy already checked, and makes the call.",
+      "config": {
+        "approvers": [
+          {
+            "name": "Hannah Brooks",
+            "role": "Claims assessor"
+          },
+          {
+            "name": "Marcus Tan",
+            "role": "Claims team leader"
+          }
+        ],
+        "accept": "Approve claim",
+        "sendBack": "Send back",
+        "confirmTitle": "Send this claim back?",
+        "confirmText": "The customer will be told what's still needed, and the claim waits until they reply. Say exactly what you need from them.",
+        "confirmButton": "Send back",
+        "note": "What else do you need?"
+      }
+    }
+  ]
+}

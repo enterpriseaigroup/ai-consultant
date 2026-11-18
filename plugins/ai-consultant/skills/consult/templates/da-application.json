@@ -1,0 +1,213 @@
+{
+  "id": "da-application",
+  "name": "Development application",
+  "goal": "Catch missing documents and information when the application is submitted, not days later.",
+  "refPrefix": "DA",
+  "newLabel": "New application",
+  "assistant": {
+    "greeting": "Hi, I can help you get your housing application right first time. Ask me about any document or step.",
+    "answers": [
+      {
+        "when": "basix",
+        "reply": "A BASIX certificate shows your home meets NSW energy and water targets. Get it from the BASIX website. The dwelling type, floor area and number of bedrooms must match your plans."
+      },
+      {
+        "when": "consent",
+        "reply": "Every owner on the title must sign owner's consent. If the land is owned by a company, a director must sign and give the ACN."
+      },
+      {
+        "when": "bushfire",
+        "reply": "If your land is mapped as bush fire prone, you need a bushfire assessment report with a BAL rating. We've checked your address against the map."
+      },
+      {
+        "when": "statement",
+        "reply": "The Statement of Environmental Effects explains how your proposal meets the planning controls and what impacts it has, such as privacy, overshadowing and traffic."
+      },
+      {
+        "when": "how long",
+        "reply": "If everything is complete when you lodge, a reviewer can start assessing it straight away, with no 7-day request for more information."
+      }
+    ],
+    "fallback": "In the real app I'd answer that from the council's lodgement checklist. For now, try asking about BASIX, owner's consent, bushfire or the Statement of Environmental Effects."
+  },
+  "steps": [
+    {
+      "label": "About your project",
+      "short": "Project",
+      "kind": "form",
+      "goal": "Tell us where you're building and what, so we know which documents your site needs.",
+      "config": {
+        "saveAs": "Applications",
+        "fields": [
+          {
+            "label": "Site address",
+            "type": "text",
+            "required": true,
+            "wide": true,
+            "hint": "Street address of the land"
+          },
+          {
+            "label": "Lot and DP",
+            "type": "text",
+            "required": true,
+            "hint": "From your title, e.g. Lot 12 DP 1045678"
+          },
+          {
+            "label": "What are you building?",
+            "type": "choice",
+            "required": true,
+            "options": [
+              "New house",
+              "Dual occupancy",
+              "Secondary dwelling (granny flat)",
+              "Alterations and additions"
+            ]
+          },
+          {
+            "label": "Estimated cost of works ($)",
+            "type": "number",
+            "required": true,
+            "hint": "Including GST"
+          },
+          {
+            "label": "Applicant name",
+            "type": "text",
+            "required": true
+          },
+          {
+            "label": "Applicant email",
+            "type": "email",
+            "required": true
+          },
+          {
+            "label": "Are you the only owner of the land?",
+            "type": "toggle",
+            "required": true,
+            "hint": "If not, every owner must sign consent"
+          },
+          {
+            "label": "Will any trees be removed?",
+            "type": "toggle",
+            "required": true
+          },
+          {
+            "label": "Describe the proposal",
+            "type": "long",
+            "required": true,
+            "wide": true
+          }
+        ],
+        "sample": {
+          "Site address": "14 Wattle Grove, Riverbend NSW 2770",
+          "Lot and DP": "Lot 12 DP 1045678",
+          "What are you building?": "Dual occupancy",
+          "Estimated cost of works ($)": "1,150,000",
+          "Applicant name": "Priya Nair",
+          "Applicant email": "priya.nair@example.com",
+          "Are you the only owner of the land?": "No",
+          "Will any trees be removed?": "Yes",
+          "Describe the proposal": "Demolish the existing single-storey house and build an attached two-storey dual occupancy, each with three bedrooms and a double garage. One street tree near the driveway to be removed."
+        }
+      }
+    },
+    {
+      "label": "Upload your documents",
+      "short": "Documents",
+      "kind": "upload",
+      "goal": "Add your documents. Each one is checked the moment you add it, not 3 to 5 days later.",
+      "config": {
+        "saveAs": "Documents",
+        "aiCheck": true,
+        "checklist": [
+          {
+            "name": "Architectural plans",
+            "check": "Site, floor, elevations and sections, drawn to scale with a north point",
+            "sample": "The elevations are a phone photo and can't be read at scale"
+          },
+          {
+            "name": "Survey plan",
+            "check": "By a registered surveyor, showing levels and boundaries",
+            "sample": "The survey is from 2009 and doesn't show the existing house"
+          },
+          {
+            "name": "Statement of Environmental Effects",
+            "check": "Addresses the planning controls for this zone",
+            "sample": "It doesn't cover privacy or overshadowing for the neighbours",
+            "human": "Read the new privacy and overshadowing section"
+          },
+          {
+            "name": "BASIX certificate",
+            "check": "Matches the plans: dwelling type, floor area and bedrooms",
+            "sample": "BASIX says 4 bedrooms per dwelling; the plans show 3"
+          },
+          {
+            "name": "Owner's consent",
+            "check": "Signed by every owner on the title",
+            "sample": "Only one of the two owners on the title has signed",
+            "human": "Check the second owner's signature against the title"
+          },
+          {
+            "name": "Cost of works estimate",
+            "check": "Matches the cost in your application",
+            "sample": "The estimate says $980,000; your application says ${Estimated cost of works ($)}"
+          },
+          {
+            "name": "Stormwater concept plan",
+            "check": "Shows where the water drains to",
+            "sample": "No discharge point is shown"
+          },
+          {
+            "name": "Shadow diagrams",
+            "check": "9am, 12pm and 3pm on 21 June",
+            "sample": "Only the 12pm diagram is included"
+          },
+          {
+            "name": "Arborist report",
+            "check": "Covers every tree being removed",
+            "why": "Needed because you're removing a tree",
+            "when": {
+              "Will any trees be removed?": "Yes"
+            },
+            "sample": "It doesn't cover the street tree near the driveway",
+            "human": "Confirm the street tree is the council's to remove"
+          },
+          {
+            "name": "Bushfire assessment report",
+            "check": "Gives the site's BAL rating",
+            "why": "Needed because {Site address} is on the bush fire prone land map",
+            "sample": "No BAL rating is given"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Fix and lodge",
+      "short": "Lodge",
+      "kind": "compose",
+      "goal": "Here's what's still missing or needs fixing, in plain words. Fix it here, then lodge.",
+      "config": {
+        "saveAs": "Completeness reports"
+      }
+    },
+    {
+      "label": "Reviewer check",
+      "short": "Review",
+      "kind": "approval",
+      "goal": "The application arrives complete, with a summary of what the checks passed and what needs a human look.",
+      "config": {
+        "approvers": [
+          {
+            "name": "Daniel Okafor",
+            "role": "Development assessment officer"
+          }
+        ],
+        "accept": "Accept for assessment",
+        "sendBack": "Send back",
+        "confirmTitle": "Send this application back?",
+        "confirmText": "The applicant will get 7 days to fix what you've noted. The checks above all passed, so say what still needs changing.",
+        "confirmButton": "Send back",
+        "note": "What needs fixing?"
+      }
+    }
+  ]
+}

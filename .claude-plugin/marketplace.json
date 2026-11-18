@@ -1,0 +1,9 @@
+{
+  "name": "enterprise-ai",
+  "owner": { "name": "Enterprise AI", "url": "https://www.enterpriseaigroup.com" },
+  "metadata": { "description": "Plugins from Enterprise AI." },
+  "plugins": [
+    { "name": "ai-consultant", "source": "./plugins/ai-consultant", "description": "An AI consultant, powered by Enterprise AI: the right questions, a brief, and a clickable prototype in minutes." },
+    { "name": "ai-consultant-design-kit", "source": "./plugins/ai-consultant-design-kit", "description": "Optional design skills that make the AI Consultant's prototypes look and feel better." }
+  ]
+}

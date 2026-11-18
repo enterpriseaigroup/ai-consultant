@@ -1,0 +1,24 @@
+{
+  "name": "ai-consultant",
+  "displayName": "AI Consultant",
+  "version": "0.6.4",
+  "description": "An AI consultant for Claude Code, powered by Enterprise AI. Tell it the app you want; it asks the questions a good consultant would, writes the brief, and shows you a clickable prototype with a recorded walkthrough, in minutes.",
+  "author": {
+    "name": "Enterprise AI",
+    "url": "https://www.enterpriseaigroup.com"
+  },
+  "homepage": "https://www.enterpriseaigroup.com/?utm_source=claude-plugin&utm_medium=ai-consultant&utm_campaign=listing",
+  "repository": "https://github.com/enterpriseaigroup/ai-consultant",
+  "license": "Apache-2.0",
+  "privacyPolicyUrl": "https://github.com/enterpriseaigroup/ai-consultant/blob/main/PRIVACY.md",
+  "supportUrl": "https://www.enterpriseaigroup.com/support",
+  "keywords": [
+    "consulting",
+    "prototype",
+    "brief",
+    "discovery",
+    "requirements",
+    "business process",
+    "walkthrough"
+  ]
+}

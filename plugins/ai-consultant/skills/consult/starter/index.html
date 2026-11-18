@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--background); --color-foreground: var(--foreground);
+    --color-card: var(--card); --color-card-foreground: var(--card-foreground);
+    --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary); --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted); --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent); --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border); --color-input: var(--input); --color-ring: var(--ring);
+    --color-sidebar: var(--sidebar); --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-accent: var(--sidebar-accent); --color-sidebar-border: var(--sidebar-border);
+  }
+  :root {
+    --background: oklch(1 0 0); --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0); --card-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0); --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0); --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0); --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0); --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0); --input: oklch(0.922 0 0); --ring: oklch(0.708 0 0);
+    --sidebar: oklch(0.985 0 0); --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-accent: oklch(0.955 0 0); --sidebar-border: oklch(0.922 0 0);
+  }
+  @layer base {
+    * { @apply border-border; }
+    body { @apply bg-background text-foreground font-sans antialiased; }
+  }
+</style>
+<!-- UI SDK: pickers, dialogs and toasts with keyboard and screen-reader behaviour built in.
+     Imported into Tailwind's components layer so Tailwind's reset doesn't wipe it. -->
+<style>@import url("https://ui-sdk.dev/web@0.css") layer(components);</style>
+<script type="module" src="https://ui-sdk.dev/web@0.js"></script>
+<style>
+  :root {
+    color-scheme: light;
+    --ui-background: var(--background); --ui-foreground: var(--foreground);
+    --ui-muted: var(--muted); --ui-muted-foreground: var(--muted-foreground);
+    --ui-border: var(--border); --ui-input: var(--input);
+    --ui-primary: var(--primary); --ui-primary-foreground: var(--primary-foreground);
+    --ui-destructive: var(--destructive);
+    --ui-ring: color-mix(in oklch, var(--ring) 50%, transparent); --ui-ring-border: var(--ring);
+    --ui-radius: 0.5rem; --ui-font-size: 0.875rem;
+    --ui-font-sans: ui-sans-serif, system-ui, sans-serif;
+    --ui-overlay: oklch(0 0 0 / 0.5);
+  }
+  ui-field-label, ui-combobox-label, ui-select-label { font-size: 0.875rem; font-weight: 500; line-height: 1.25rem; }
+  ui-field-description, ui-field-error, ui-combobox-empty { font-size: 0.875rem; line-height: 1.25rem; }
+  ui-field[data-row] { flex-direction: row; align-items: center; justify-content: space-between; gap: 1rem; }
+</style>
+<style>
+  /* The shell: the sidebar sits on the ground (the default layer); the page is a card one step up. */
+  :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
+  /* Our compact stepper (workspace: adCompactStepperHtml / .af-cs-*), on the shell's tokens. */
+  .cs { display: flex; gap: 8px; width: 100%; min-width: 0; }
+  .cs-pill { display: flex; align-items: center; gap: 8px; flex: 1 1 0; min-width: 0; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--muted); color: var(--muted-foreground); font-size: 0.875rem; font-weight: 500; line-height: 1rem; white-space: nowrap; text-align: left;
+    transition: transform 150ms ease-out; }
+  .cs-pill:active:not(:disabled) { transform: scale(0.97); }
+  .cs-ring { display: grid; place-items: center; flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid currentColor; font-size: 0.75rem; line-height: 1; }
+  .cs-label { overflow: hidden; text-overflow: ellipsis; }
+  .cs-pill[aria-current="step"] { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+  .cs-pill[aria-current="step"] .cs-ring { background: var(--primary-foreground); border-color: var(--primary-foreground); color: var(--primary); }
+  .cs-pill[data-done] { background: var(--background); color: var(--foreground); }
+  .cs-pill:disabled { opacity: .55; cursor: not-allowed; }
+  @media (hover: hover) and (pointer: fine) { .cs-pill[data-done]:hover { background: var(--accent); } }
+  @media (max-width: 639px) { .cs-pill:not([aria-current]) { flex: 0 0 auto; } .cs-pill:not([aria-current]) .cs-label { display: none; } }
+  .place[aria-current="page"] { background: var(--sidebar-accent); font-weight: 500; }
+  .msg-me { background: var(--primary); color: var(--primary-foreground); }
+  body[data-sidebar="collapsed"] [data-sidebar-panel] { display: none; }
+  body[data-sidebar="collapsed"] [data-inset] { margin-left: 0.5rem; }
+  [data-client-trigger] ui-select-value { display: none; }
+  @media (max-width: 767px) {
+    [data-sidebar-panel] { position: fixed; inset: 0 auto 0 0; z-index: 40; background: var(--sidebar);
+      transform: translateX(-100%); visibility: hidden; transition: transform 220ms var(--ease-out), visibility 0s linear 220ms; }
+    body[data-sidebar="open"] [data-sidebar-panel] { transform: none; visibility: visible; box-shadow: 0 10px 30px rgb(0 0 0 / 0.12); transition: transform 220ms var(--ease-out); }
+    body[data-sidebar="collapsed"] [data-sidebar-panel] { display: flex; }
+    body[data-sidebar="open"]::after { content: ''; position: fixed; inset: 0; z-index: 30; background: rgb(0 0 0 / 0.3); }
+    [data-inset] { margin: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
+    [data-assistant] { position: fixed; inset: 0 0 0 auto; z-index: 40; width: min(100%, 22rem); background: var(--background); box-shadow: 0 10px 30px rgb(0 0 0 / 0.12); }
+  }
+  @media (prefers-reduced-motion: reduce) { [data-sidebar-panel] { transition: none; } }
+</style>
+</head>
+<body class="h-svh overflow-hidden bg-sidebar text-foreground flex" data-sidebar="expanded">
+  <!-- The app shell. Don't change this file: describe the app in its manifest, and put anything
+       unusual in custom.js. Data goes through eai.js. -->
+
+  <aside data-sidebar-panel class="w-64 shrink-0 flex flex-col gap-2 p-2 text-sidebar-foreground" aria-label="App">
+    <ui-select data-client-switch class="w-full">
+      <ui-select-trigger data-client-trigger><button class="flex h-12 w-full items-center gap-2 rounded-md border-0 bg-transparent px-2 text-left shadow-none hover:bg-sidebar-accent" aria-label="Viewing as">
+        <img data-client-logo class="size-8 shrink-0 rounded-md object-contain" alt="">
+        <span data-client-name class="min-w-0 flex-1 truncate text-sm font-semibold"></span>
+        <ui-select-value></ui-select-value>
+      </button></ui-select-trigger>
+      <ui-select-content data-client-items></ui-select-content>
+    </ui-select>
+    <button type="button" data-new class="inline-flex h-9 w-full items-center gap-2 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground transition-transform duration-150 ease-out hover:bg-primary/90 active:scale-[0.97]">
+      <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span data-new-label>New</span></button>
+    <nav data-places class="mt-2 flex flex-col gap-1" aria-label="App"></nav>
+    <div class="flex-1"></div>
+    <div class="flex items-center gap-2 px-2 py-2 text-xs text-muted-foreground">
+      <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+      <span data-where></span></div>
+  </aside>
+
+  <div data-inset class="m-2 ml-0 flex min-w-0 flex-1 flex-col overflow-hidden rounded-xl bg-background shadow-sm ring-1 ring-black/5">
+    <header class="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+      <button type="button" data-toggle-sidebar class="inline-flex size-8 items-center justify-center rounded-md hover:bg-accent active:scale-[0.97] transition-transform duration-150 ease-out" aria-label="Toggle sidebar">
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button>
+      <span class="h-4 w-px bg-border" aria-hidden="true"></span>
+      <h1 data-step-title class="truncate text-base font-medium"></h1>
+      <div class="ml-auto flex items-center gap-2">
+      <a data-watch hidden href="./happy-path.html" class="inline-flex h-8 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-accent active:scale-[0.97] transition-transform duration-150 ease-out">
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z" fill="currentColor"/></svg>Watch how it works</a>
+      <button type="button" data-toggle-assistant aria-pressed="true" class="inline-flex h-8 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium hover:bg-accent active:scale-[0.97] transition-transform duration-150 ease-out">
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Assistant</button>
+      </div>
+    </header>
+    <div class="flex min-h-0 flex-1">
+      <main class="min-w-0 flex-1 overflow-auto">
+        <div data-flow class="mx-auto flex max-w-3xl flex-col gap-6 p-6">
+          <nav data-steps class="cs" aria-label="Steps"></nav>
+          <section data-step class="flex flex-col gap-6"></section>
+        </div>
+        <div data-list class="mx-auto flex max-w-3xl flex-col gap-4 p-6" hidden></div>
+      </main>
+      <aside data-assistant class="flex w-80 shrink-0 flex-col border-l" aria-label="Assistant">
+        <div class="flex items-center gap-3 border-b p-4">
+          <img data-client-logo class="size-8 rounded-md object-contain" alt="">
+          <div class="flex min-w-0 flex-col"><span class="truncate text-sm font-semibold"><span data-client-name></span> assistant</span><span data-assist-sub class="truncate text-xs text-muted-foreground"></span></div>
+        </div>
+        <div data-messages class="flex flex-1 flex-col gap-3 overflow-auto p-4"></div>
+        <form data-ask class="border-t p-4">
+          <div class="flex items-center gap-2 rounded-lg border border-input bg-background py-1 pl-3 pr-1 focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50">
+            <input name="q" aria-label="Ask the assistant" placeholder="Ask the assistant" autocomplete="off" class="h-8 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground">
+            <button data-send aria-label="Send" disabled class="inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground transition-[transform,opacity] duration-150 ease-out active:scale-[0.97] disabled:opacity-40">
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+          </div>
+        </form>
+      </aside>
+    </div>
+  </div>
+  <script type="module" src="./kit.js"></script>
+</body>
+</html>

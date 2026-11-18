@@ -1,0 +1,170 @@
+{
+  "id": "campaign-email",
+  "name": "Campaign email",
+  "goal": "Go from a brief to an approved email in a day, without five rounds of changes.",
+  "refPrefix": "EM",
+  "newLabel": "New campaign",
+  "assistant": {
+    "greeting": "Hi, I can help you get this email written and signed off. Ask me about subject lines, the rules or your brand.",
+    "answers": [
+      {
+        "when": "subject",
+        "reply": "Keep subject lines under 50 characters so they don't get cut off on a phone. The draft gives you three to choose from."
+      },
+      {
+        "when": "unsubscribe",
+        "reply": "Under the Spam Act, every marketing email must say who it's from and have an unsubscribe link that works. The draft always includes both."
+      },
+      {
+        "when": "offer",
+        "reply": "If the email has an offer, it needs the end date and a link to the full terms. The check flags any offer without them."
+      },
+      {
+        "when": "image",
+        "reply": "Use a main image at least 1200 pixels wide, and only images we have the rights to. Add a short description for people who can't see it."
+      },
+      {
+        "when": "when to send",
+        "reply": "Tuesday to Thursday mornings tend to get the most opens. You can pick the send date in the brief."
+      }
+    ],
+    "fallback": "In the real app I'd answer that from your brand guidelines. For now, try asking about subject lines, unsubscribe links, offers or images."
+  },
+  "steps": [
+    {
+      "label": "Brief",
+      "short": "Brief",
+      "kind": "form",
+      "goal": "Tell us who it's for and what you want them to do, so the first draft is close.",
+      "config": {
+        "saveAs": "Briefs",
+        "fields": [
+          {
+            "label": "Campaign name",
+            "type": "text",
+            "required": true,
+            "wide": true
+          },
+          {
+            "label": "Who's it for?",
+            "type": "choice",
+            "required": true,
+            "options": [
+              "All customers",
+              "New customers",
+              "Customers who haven't bought in 6 months",
+              "Business customers"
+            ]
+          },
+          {
+            "label": "Send date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "label": "Tone",
+            "type": "choice",
+            "required": true,
+            "options": [
+              "Friendly",
+              "Professional",
+              "Urgent"
+            ]
+          },
+          {
+            "label": "What should they do?",
+            "type": "text",
+            "required": true,
+            "hint": "The button text, like \"Book now\""
+          },
+          {
+            "label": "Is there an offer?",
+            "type": "toggle",
+            "required": true
+          },
+          {
+            "label": "Main message",
+            "type": "long",
+            "required": true,
+            "wide": true,
+            "hint": "What they need to know, in a few sentences"
+          }
+        ],
+        "sample": {
+          "Campaign name": "Summer service special",
+          "Who's it for?": "Customers who haven't bought in 6 months",
+          "Send date": "2026-12-08",
+          "Tone": "Friendly",
+          "What should they do?": "Book a service",
+          "Is there an offer?": "Yes",
+          "Main message": "Get your air conditioner serviced before the summer rush. Book before 31 December and save 20% on a standard service. Same-week appointments in most areas."
+        }
+      }
+    },
+    {
+      "label": "Brand assets",
+      "short": "Assets",
+      "kind": "upload",
+      "goal": "Add your logo, images and offer terms. Each one is checked against the brand as you add it.",
+      "config": {
+        "saveAs": "Brand assets",
+        "aiCheck": true,
+        "checklist": [
+          {
+            "name": "Logo",
+            "check": "PNG or SVG with a clear background, at least 400 pixels wide",
+            "sample": "The logo is a small JPEG with a white box around it"
+          },
+          {
+            "name": "Main image",
+            "check": "At least 1200 pixels wide, and one we have the rights to use",
+            "sample": "The image is 640 pixels wide and will look blurry on most screens"
+          },
+          {
+            "name": "Brand guidelines",
+            "check": "The current version, with colours, fonts and tone of voice",
+            "sample": "The guidelines are from 2023 and show the old colours"
+          },
+          {
+            "name": "Offer terms",
+            "check": "Gives the end date, who's eligible and any exclusions",
+            "sample": "The terms don't say when the 20% offer ends"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Draft email",
+      "short": "Draft",
+      "kind": "compose",
+      "goal": "Here's the email in our brand and tone, with subject lines to choose from and the rules already checked.",
+      "config": {
+        "saveAs": "Email drafts"
+      }
+    },
+    {
+      "label": "Sign-off",
+      "short": "Sign-off",
+      "kind": "approval",
+      "goal": "The marketing manager sees the finished email and the checks, and approves it to send.",
+      "config": {
+        "approvers": [
+          {
+            "name": "Olivia Grant",
+            "role": "Marketing manager"
+          },
+          {
+            "name": "Daniel Ferreira",
+            "role": "Brand lead"
+          }
+        ],
+        "accept": "Approve to send",
+        "sendBack": "Send back",
+        "confirmTitle": "Send this email back?",
+        "confirmText": "The email won't go out until it's approved again. Say what needs to change so the next draft gets it right.",
+        "confirmButton": "Send back",
+        "note": "What should change?"
+      }
+    }
+  ]
+}

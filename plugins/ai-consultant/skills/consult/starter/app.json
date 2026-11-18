@@ -1,0 +1,69 @@
+{
+  "id": "my-app",
+  "name": "My app",
+  "goal": "One sentence, in the client's words.",
+  "refPrefix": "APP",
+  "assistant": {
+    "greeting": "Hi, I can help you with this. Ask me anything about the step you're on.",
+    "answers": [
+      {
+        "when": "document",
+        "reply": "You'll need the documents on the checklist in the Documents step. Each one is checked when you add it."
+      }
+    ],
+    "fallback": "In the real app I'd answer that from your documents. For now, ask me about one of the steps."
+  },
+  "steps": [
+    {
+      "label": "Details",
+      "kind": "form",
+      "goal": "Tell us about it.",
+      "config": {
+        "saveAs": "Submissions",
+        "fields": [
+          {
+            "label": "Name",
+            "type": "text",
+            "required": true
+          }
+        ],
+        "sample": {
+          "Name": "Sam Example"
+        }
+      }
+    },
+    {
+      "label": "Documents",
+      "kind": "upload",
+      "goal": "Add the documents we need.",
+      "config": {
+        "aiCheck": true,
+        "checklist": [
+          {
+            "name": "A document",
+            "check": "signed",
+            "sample": "not signed"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Check",
+      "kind": "compose",
+      "goal": "What's missing before you go on."
+    },
+    {
+      "label": "Sign-off",
+      "kind": "approval",
+      "goal": "Someone accepts it.",
+      "config": {
+        "approvers": [
+          {
+            "name": "Alex Lee",
+            "role": "Reviewer"
+          }
+        ]
+      }
+    }
+  ]
+}
