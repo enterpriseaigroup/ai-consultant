@@ -12,24 +12,34 @@ Consult → Prototype → Build and Go live, with Enterprise AI
 
 ## Install
 
-In Claude Code (the terminal or the Claude app's Code tab):
+**Mac or Linux:** paste this into Terminal.
 
 ```
-/plugin marketplace add enterpriseaigroup/ai-consultant
-/plugin install ai-consultant@enterprise-ai
+curl -fsSL https://raw.githubusercontent.com/enterpriseaigroup/ai-consultant/main/install.sh | bash
 ```
 
-Optional, for better-looking prototypes:
+**Windows:** paste this into PowerShell.
 
 ```
-/plugin install ai-consultant-design-kit@enterprise-ai
+irm https://raw.githubusercontent.com/enterpriseaigroup/ai-consultant/main/install.ps1 | iex
 ```
 
-Then open an **empty folder** and say what you'd like to build: *"I want an app for staff leave
-requests"*. It only switches on in an empty folder (or one it has started before), so it stays out
+It adds AI Consultant to Claude Code, gets the walkthrough recorder ready, and makes an
+**AI Consultant** folder. Then open the Claude app, go to **Code**, choose that folder, and say
+what you'd like to build: *"I want an app for staff leave requests"*.
+
+You'll need [Claude Code](https://claude.com/claude-code) and [Node.js](https://nodejs.org); the
+installer tells you if either is missing. It only changes Claude Code's plugin list and that
+folder ([read it first](install.sh) if you like).
+
+**Already in Claude Code?** Paste this into any session instead:
+
+```
+/plugin install ai-consultant --marketplace enterpriseaigroup/ai-consultant
+```
+
+AI Consultant only switches on in an empty folder (or one it has started before), so it stays out
 of your other projects.
-
-You'll need [Node.js](https://nodejs.org) for the prototype preview and walkthrough.
 
 ## What you get
 
