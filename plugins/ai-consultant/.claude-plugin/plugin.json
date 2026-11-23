@@ -1,7 +1,7 @@
 {
   "name": "ai-consultant",
   "displayName": "AI Consultant",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "An AI consultant for Claude Code, powered by Enterprise AI. Tell it the app you want; it asks the questions a good consultant would, writes the brief, and shows you a clickable prototype with a recorded walkthrough, in minutes.",
   "author": {
     "name": "Enterprise AI",

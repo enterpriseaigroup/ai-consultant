@@ -254,6 +254,74 @@ const KINDS = {
   },
 };
 
+/* ---------- options: one step, drawn two or three ways ---------- */
+// A step can carry "options": [{ "name": "One at a time", …what differs: kind, config, goal }].
+// A dark pill at the bottom flips between them, so they can try each and say which works. It's
+// harness chrome, not part of their app: it looks the same in every draft and never takes the
+// client's brand. A custom option is drawn in screens/<label slug>--<option slug>.js.
+// The choice sticks in this browser. The walkthrough (?rec) shows the first option, with no pill.
+const REC = new URLSearchParams(location.search).has('rec');
+const KEY = (s) => `eai-option:${M.name}:${s.label}`;
+const chosen = (s) => { const n = REC ? 0 : Number(localStorage.getItem(KEY(s))) || 0; return n < s.options.length ? n : 0; };
+function pick(s, n) {
+  if (!s?.options?.length) return s;
+  if (n === undefined) n = chosen(s);
+  const o = s.options[n], x = { ...s, ...o, label: s.label, option: n };
+  if (x.kind === 'custom') x.screen = `${slug(s.label)}--${slug(o.name)}`;
+  return x;
+}
+document.head.insertAdjacentHTML('beforeend', `<style>
+.proto-picker{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:2147483647;display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;background:rgba(10,10,10,.82);-webkit-backdrop-filter:blur(12px) saturate(1.4);backdrop-filter:blur(12px) saturate(1.4);box-shadow:0 0 0 1px rgba(255,255,255,.08) inset,0 8px 24px rgba(0,0,0,.24),0 2px 6px rgba(0,0,0,.12);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:13px;line-height:1;-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none}
+.proto-picker[hidden]{display:none}
+.proto-picker-highlight{position:absolute;top:4px;left:0;height:28px;border-radius:999px;background:rgba(255,255,255,.12);will-change:transform}
+.proto-picker[data-ready] .proto-picker-highlight{transition:transform 250ms cubic-bezier(.23,1,.32,1),width 250ms cubic-bezier(.23,1,.32,1)}
+@media (prefers-reduced-motion:reduce){.proto-picker[data-ready] .proto-picker-highlight{transition:none}}
+.proto-picker-item{position:relative;display:flex;align-items:center;height:28px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:rgba(255,255,255,.55);font:inherit;white-space:nowrap;cursor:pointer;transition:color 150ms ease-out}
+@media (hover:hover) and (pointer:fine){.proto-picker-item:hover{color:rgba(255,255,255,.85)}}
+.proto-picker-item:active{transform:scale(.97)}
+.proto-picker-item:focus-visible{outline:2px solid rgba(255,255,255,.4);outline-offset:2px}
+.proto-picker-item[data-active]{color:#fff}
+</style>`);
+document.body.insertAdjacentHTML('beforeend', '<nav class="proto-picker" hidden></nav>');
+const PICK = $('.proto-picker');
+let pickFor = null;
+function picker(s) {
+  const on = !REC && !!s.options?.length;
+  PICK.hidden = !on;
+  $('[data-flow]').style.paddingBottom = on ? '72px' : '';
+  if (!on) { pickFor = null; return; }
+  if (pickFor !== s.label) {
+    pickFor = s.label;
+    PICK.removeAttribute('data-ready');
+    PICK.setAttribute('aria-label', `Ways to do ${s.label}`);
+    PICK.innerHTML = '<span class="proto-picker-highlight" aria-hidden="true"></span>' + s.options.map((o, n) => `<button type="button" class="proto-picker-item" data-option="${n}" title="${n + 1}">${esc(o.name)}</button>`).join('');
+    PICK.querySelectorAll('[data-option]').forEach((b) => b.addEventListener('click', () => choose(Number(b.dataset.option))));
+    requestAnimationFrame(() => requestAnimationFrame(() => PICK.setAttribute('data-ready', '')));
+  }
+  const items = [...PICK.querySelectorAll('[data-option]')];
+  items.forEach((b, n) => { b.toggleAttribute('data-active', n === s.option); if (n === s.option) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); });
+  const a = items[s.option], h = $('.proto-picker-highlight', PICK);
+  h.style.width = `${a.offsetWidth}px`; h.style.transform = `translateX(${a.offsetLeft}px)`;
+}
+function choose(n) {
+  const s = M.steps[ctx.step];
+  if (!s.options?.[n] || n === chosen(s)) return;
+  localStorage.setItem(KEY(s), String(n));
+  draw();
+}
+addEventListener('resize', () => { if (pickFor) picker(pick(M.steps[ctx.step])); });
+document.addEventListener('keydown', (e) => {
+  const s = M.steps[ctx.step];
+  if (!pickFor || !s.options || e.metaKey || e.ctrlKey || e.altKey) return;
+  // Only when nothing in their app has focus, so a grid's arrow keys or a typed number stay theirs.
+  const f = document.activeElement;
+  if (f && f !== document.body && !PICK.contains(f)) return;
+  const n = parseInt(e.key, 10), c = chosen(s), len = s.options.length;
+  if (n >= 1 && n <= len) choose(n - 1);
+  else if (e.key === 'ArrowRight') choose((c + 1) % len);
+  else if (e.key === 'ArrowLeft') choose((c - 1 + len) % len);
+});
+
 /* ---------- screens drawn one by one ---------- */
 // A step with "kind": "custom" can live in screens/<its label as a slug>.js:
 //   export default (el, step, i, kit) => { el.innerHTML = …; return async () => true; }
@@ -261,7 +329,8 @@ const KINDS = {
 // Until that file exists the step says it's being drawn, and the screen appears by itself when it
 // lands, so the draft can open before every screen is finished.
 const screens = {};
-const loadScreen = (s) => import(`./screens/${slug(s.label)}.js?v=${Date.now()}`).then((m) => (screens[s.label] = m), () => null);
+const file = (s) => s.screen || slug(s.label);
+const loadScreen = (s) => import(`./screens/${file(s)}.js?v=${Date.now()}`).then((m) => (screens[file(s)] = m), () => null);
 let waiting = null;
 function drawing(el, s, i) {
   el.innerHTML = `${head(s)}<div class="flex flex-col gap-3 rounded-lg border border-dashed p-6" aria-live="polite">
@@ -271,12 +340,12 @@ function drawing(el, s, i) {
   clearInterval(waiting);
   waiting = setInterval(async () => { if (await loadScreen(s)) { clearInterval(waiting); if (ctx.step === i) draw(); } }, 2500);
 }
-M.steps.filter((x) => x.kind === 'custom' && !custom[x.label]).forEach(loadScreen);
+M.steps.flatMap((x) => (x.options || [null]).map((_, n) => pick(x, n))).filter((x) => x.kind === 'custom' && !custom[x.label]).forEach(loadScreen);
 
 // Tables need room: while the step on screen has a table (or "wide": true), the page widens.
 function fit() {
   if (TOOL) return;
-  const s = M.steps[ctx.step], wide = !!(s?.wide || s?.config?.wide || $('[data-step] table'));
+  const s = pick(M.steps[ctx.step]), wide = !!(s?.wide || s?.config?.wide || $('[data-step] table'));
   $('[data-flow]').classList.toggle('max-w-3xl', !wide);
   $('[data-flow]').classList.toggle('max-w-6xl', wide);
   // …and the assistant steps aside for it, unless they opened the assistant themselves.
@@ -294,13 +363,13 @@ function wire(el, i) {
   });
 }
 function draw() {
-  const i = ctx.step, s = M.steps[i], el = $('[data-step]');
+  const i = ctx.step, s = pick(M.steps[i]), el = $('[data-step]');
   const CHECK = '<svg class="size-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
   $('[data-steps]').innerHTML = M.steps.map((x, n) => `<button type="button" class="cs-pill" title="${esc(x.label)}" aria-label="Step ${n + 1}: ${esc(x.label)}" data-go="${n}" ${n === i ? 'aria-current="step"' : ''} ${n < i ? 'data-done' : ''} ${n > i ? 'disabled' : ''}>
     <span class="cs-ring">${n < i ? CHECK : n + 1}</span><span class="cs-label">${esc(x.short || x.label.split(/\s+/)[0])}</span></button>`).join('');
   document.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => { ctx.step = Number(b.dataset.go); draw(); }));
   clearInterval(waiting);
-  const mod = screens[s.label];
+  const mod = screens[file(s)];
   const draw1 = custom[s.label] || custom[i + 1] || mod?.default || KINDS[s.kind];
   const kit = { EAI, ctx, nav, head, esc, field, read, fill, toast: (...a) => toast(...a), MAIN, OUTLINE, BADGE, SAMPLE };
   leave = draw1 ? draw1(el, s, i, kit) : null;
@@ -314,6 +383,7 @@ function draw() {
     $('[data-sample]', el).addEventListener('click', () => mod.sample(el, s, i, kit));
   }
   wire(el, i);
+  picker(s);
   $('[data-assist-sub]').textContent = `Helping with ${s.label}`;
 }
 
