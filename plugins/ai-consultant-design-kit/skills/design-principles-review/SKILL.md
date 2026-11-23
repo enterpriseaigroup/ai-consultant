@@ -1,4 +1,5 @@
 ---
+user-invocable: false
 name: design-principles-review
 description: Critique a UI design (Paper frame, live page, or two variants side by side) against the 13 graphic design principles (alignment, contrast, balance, hierarchy, colour, white space, proportion, repetition, rhythm, movement, emphasis, proximity, unity), plus a style-inventory audit. Use when asked to "critique", "review the design", "go through the design principles", "audit how many styles we use", compare variants, or link figma.com/resource-library/graphic-design-principles. Produces a verdict table, a prioritised fix list, and on request an annotated critique board and a fixes frame in Paper — Paper first, no code until approved.
 ---

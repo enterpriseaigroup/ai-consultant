@@ -114,6 +114,26 @@ One question at a time, with your best guess attached ("I've assumed only Sam si
 away, who does?"). Fold the answer into the next version, and note what you learned in BRIEF.md
 under the step it changes. Move on to Build only when the questions left wouldn't change the app.
 
+## Show options when there's a real fork
+
+Trying two ways beats describing them, and drawing a second way costs you minutes. When a question
+would change how a screen works, not just its wording, don't ask it in the abstract: draw the step
+two or three ways and let them flip between them. You choose when, and what the options are; never
+ask them whether they'd like options.
+
+- **Only for a real fork,** one per version: one approver or two, a checklist or everything side by
+  side, one at a time or all on one page. Not colours, wording or tidy-ups: make those calls yourself.
+- **Each option is a different answer,** named by what differs, in their words ("One approver",
+  "Two to sign", "Side by side"), never "Option A". Two or three; first is your recommendation.
+- **In `app.json`,** the step keeps its `label` and `walk`, and gets `"options"`: one object each,
+  with a `name` and only what differs (`kind`, `config`, `goal`). A custom option is drawn in
+  `prototype/screens/<label slug>--<name slug>.js`, with its own `sample`. A pill at the bottom of
+  the draft switches between them; the walkthrough shows the first.
+- **Say it in one line:** "I've drawn the sign-off two ways; switch between them at the bottom.
+  Which fits how Sam works?" Then note the fork in BRIEF.md under that step.
+- **Once they pick,** fold that option into the step, delete `options` and the other options'
+  screens, and carry on. If they can't choose, keep both and ask what would decide it.
+
 ## From Mike's guides (`0_gofer_start`, `gofer_plan`)
 - Offer a concrete first version once there's enough context. Make ordinary design choices and explain material assumptions.
 - If they say "just show me", show something, with the assumptions clearly identified.

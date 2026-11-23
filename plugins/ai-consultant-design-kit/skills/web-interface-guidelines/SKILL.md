@@ -1,4 +1,5 @@
 ---
+user-invocable: false
 name: web-interface-guidelines
 description: Vercel's rules for accessible, fast, delightful web interfaces (keyboard, focus, hit targets, forms, loading states, motion, layout, content, performance). Use when building or reviewing any HTML or React screen, before showing it to someone.
 ---

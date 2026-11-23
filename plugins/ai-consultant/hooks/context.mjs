@@ -23,7 +23,7 @@ if (!(starting ? claimIfEmpty(dir) : active(dir))) {
 const text = readBrief(dir);
 
 if (!text) {
-  console.log('Consultant mode is on. If the user wants to build, make or automate an app, a tool or a process, follow the consult skill: start at 01 Consult, and create BRIEF.md from the template below once you know the goal. No other files until Consult is agreed or skipped. Your first reply introduces the four steps in a few lines (see "Open with the four steps" in the consult skill), then asks one question. Every later reply starts with the journey line, so they always know where they are: **Consult** · Prototype · Build · Go live. Keep every reply short.' + guide(STATIONS[0]) + extra(STATIONS[0]) + template());
+  console.log('Consultant mode is on. If the user wants to build, make or automate an app, a tool or a process, follow the consult skill: start at 01 Consult, and create BRIEF.md from the template below once you know the goal. No other files until Consult is agreed or skipped. Your first reply is the welcome in "Open with the two steps we do here" in the consult skill, word for word, which ends with its one question. Every later reply starts with the journey line, so they always know where they are: **Consult** · Prototype · Build · Go live. Keep every reply short.' + guide(STATIONS[0]) + extra(STATIONS[0]) + template());
   process.exit(0);
 }
 
